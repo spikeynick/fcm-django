@@ -136,8 +136,10 @@ class FCMDeviceQuerySet(models.query.QuerySet):
         for (index, item) in enumerate(results):
             if 'error' in item:
                 error_list = ['MissingRegistration', 'MismatchSenderId', 'InvalidRegistration', 'NotRegistered']
+                registration_id = registration_ids[index]
+                device = self.get(registration_id=registration_id)
+                print("FCM ERROR: device_id=%s error=%s"%(device.id,item['error']))
                 if item['error'] in error_list:
-                    registration_id = registration_ids[index]
                     self.filter(registration_id=registration_id).update(
                         active=False
                     )
@@ -235,6 +237,7 @@ class FCMDevice(Device):
         device = FCMDevice.objects.filter(registration_id=self.registration_id)
         if 'error' in result['results'][0]:
             error_list = ['MissingRegistration', 'MismatchSenderId', 'InvalidRegistration', 'NotRegistered']
+            print("FCM ERROR: device_id=%s error=%s"%(device.id,result['results'][0]['error']))
             if result['results'][0]['error'] in error_list:
               device.update(active=False)
               self._delete_inactive_device_if_requested(device)
