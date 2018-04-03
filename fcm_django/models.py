@@ -58,7 +58,10 @@ class FCMDeviceQuerySet(models.query.QuerySet):
         if self:
             from .fcm import fcm_send_bulk_message
 
-            registration_ids = list(self.filter(active=True).values_list(
+            #Removing constraint on active only devices
+            #registration_ids = list(self.filter(active=True).values_list(
+
+            registration_ids = list(self.values_list(
                 'registration_id',
                 flat=True
             ))
@@ -103,7 +106,10 @@ class FCMDeviceQuerySet(models.query.QuerySet):
         if self:
             from .fcm import fcm_send_bulk_data_messages
 
-            registration_ids = list(self.filter(active=True).values_list(
+            #Removing constraint on active only devices
+            #registration_ids = list(self.filter(active=True).values_list(
+
+            registration_ids = list(self.values_list(
                 'registration_id',
                 flat=True
             ))
