@@ -148,7 +148,7 @@ class FCMDeviceQuerySet(models.query.QuerySet):
                 device_ids = [d.id for d in self.filter(registration_id=registration_id).all()]
                 if len(device_ids) == 1:
                     device_ids = device_ids[0]
-                print("FCM ERROR: device_id=%s error=%s"%(device.id,item['error']))
+                print("FCM ERROR: device_id=%s error=%s"%(device_ids,item['error']))
                 if item['error'] in error_list:
                     self.filter(registration_id=registration_id).update(
                         active=False
