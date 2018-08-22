@@ -5,7 +5,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from .settings import FCM_DJANGO_SETTINGS as SETTINGS
-
+import logging
 
 @python_2_unicode_compatible
 class Device(models.Model):
@@ -41,6 +41,9 @@ class FCMDeviceManager(models.Manager):
 
 
 class FCMDeviceQuerySet(models.query.QuerySet):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.logger = logging.getLogger(__name__)
     def send_message(
             self,
             title=None,
@@ -57,6 +60,8 @@ class FCMDeviceQuerySet(models.query.QuerySet):
         """
         if self:
             from .fcm import fcm_send_bulk_message
+            if 'logger' in kwargs:
+                self.logger = kwargs.pop('logger')
 
             #Removing constraint on active only devices
             #registration_ids = list(self.filter(active=True).values_list(
@@ -99,14 +104,16 @@ class FCMDeviceQuerySet(models.query.QuerySet):
             data_message=None,
             content_available=None,
             timeout=5,
-            json_encoder=None):
+            json_encoder=None,
+            **kwargs):
         """
         Send data messages for all active devices in queryset and deactivate if
         DELETE_INACTIVE_DEVICES setting is set to True.
         """
         if self:
             from .fcm import fcm_send_bulk_data_messages
-
+            if 'logger' in kwargs:
+                self.logger = kwargs.pop('logger')
             #Removing constraint on active only devices
             #registration_ids = list(self.filter(active=True).values_list(
 
@@ -148,7 +155,7 @@ class FCMDeviceQuerySet(models.query.QuerySet):
                 device_ids = [d.id for d in self.filter(registration_id=registration_id).all()]
                 if len(device_ids) == 1:
                     device_ids = device_ids[0]
-                print("FCM ERROR: device_id=%s error=%s"%(device_ids,item['error']))
+                self.logger.error("FCM: device_id=%s error=%s"%(device_ids,item['error']))
                 if item['error'] in error_list:
                     self.filter(registration_id=registration_id).update(
                         active=False
