@@ -2,8 +2,11 @@ fcm-django
 =========================
 
 
-.. image:: https://badge.fury.io/py/fcm-django.svg
-    :target: https://badge.fury.io/py/fcm-django
+.. image:: https://badge.fury.io/py/fcm-django.svg 
+	:target: https://badge.fury.io/py/fcm-django 
+.. image:: https://en.cryptobadges.io/badge/small/3GHRdxw64kYKbG2RXZNtKveMPpSzMy7CLR 
+	:target: https://en.cryptobadges.io/donate/3GHRdxw64kYKbG2RXZNtKveMPpSzMy7CLR
+
 
 Django app for Firebase Cloud Messaging. Used as an unified platform for sending push notifications to mobile devices & browsers (android / ios / chrome / firefox / ...).
 
@@ -40,6 +43,8 @@ Edit your settings.py file:
 	)
 
 	FCM_DJANGO_SETTINGS = {
+		"APP_VERBOSE_NAME": "[string for AppConfig's verbose_name]",
+		 # default: _('FCM Django')
 		"FCM_SERVER_KEY": "[your api key]",
 		 # true if you want to have only one active device per registered user at a time
 		 # default: False

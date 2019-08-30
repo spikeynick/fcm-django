@@ -2,7 +2,8 @@ from __future__ import absolute_import
 from rest_framework import permissions
 from rest_framework.serializers import ModelSerializer, ValidationError, \
     Serializer, CurrentUserDefault
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from fcm_django.models import FCMDevice
 from django import VERSION as DJ_VERSION
 from django.db.models import Q
@@ -90,7 +91,8 @@ class FCMDeviceSerializer(ModelSerializer, UniqueRegistrationSerializerMixin):
     class Meta(DeviceSerializerMixin.Meta):
         model = FCMDevice
 
-        extra_kwargs = {"id": {"read_only": False, "required": False}}
+        extra_kwargs = {"id": {"read_only": True, "required": False}}
+        extra_kwargs.update(DeviceSerializerMixin.Meta.extra_kwargs)
 
 
 # Permissions
@@ -137,6 +139,11 @@ class AuthorizedMixin(object):
 
 # ViewSets
 class FCMDeviceViewSet(DeviceViewSetMixin, ModelViewSet):
+    queryset = FCMDevice.objects.all()
+    serializer_class = FCMDeviceSerializer
+
+
+class FCMDeviceCreateOnlyViewSet(DeviceViewSetMixin, CreateModelMixin, GenericViewSet):
     queryset = FCMDevice.objects.all()
     serializer_class = FCMDeviceSerializer
 
