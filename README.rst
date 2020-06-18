@@ -4,8 +4,6 @@ fcm-django
 
 .. image:: https://badge.fury.io/py/fcm-django.svg 
 	:target: https://badge.fury.io/py/fcm-django 
-.. image:: https://en.cryptobadges.io/badge/small/3GHRdxw64kYKbG2RXZNtKveMPpSzMy7CLR 
-	:target: https://en.cryptobadges.io/donate/3GHRdxw64kYKbG2RXZNtKveMPpSzMy7CLR
 
 
 Django app for Firebase Cloud Messaging. Used as an unified platform for sending push notifications to mobile devices & browsers (android / ios / chrome / firefox / ...).
@@ -25,6 +23,11 @@ Functionality:
  - automatic device pruning: devices to which notifications fail to send are marked as inactive
  - devices marked as inactive will not be sent notifications
  - Django rest framework viewsets
+
+Demo javascript client project
+-------------------
+Unsure how to use this project? Check out the demo at:
+https://github.com/xtrinch/fcm-django-web-demo
 
 Setup
 -----
@@ -198,15 +201,13 @@ http://www.django-rest-framework.org/tutorial/6-viewsets-and-routers#binding-vie
 		# ...
 	)
 
-Demo project for implementation of web push notifications
--------------------
-Demonstrates the use of service workers:
-https://github.com/xtrinch/fcm-django-web-demo
-
-
 Python 3 support
 ----------------
-``fcm-django`` is fully compatible with Python 3.4 & 3.5 & 3.6 & 3.7
+``fcm-django`` is fully compatible with Python 2.7 & 3.4 & 3.5 & 3.6 & 3.7
+
+Django version compatibility
+----------------------------
+Compatible with Django versions 1.8+. For lower django versions, use fcm-django version 0.3.2 and below.
 
 Acknowledgements
 ----------------
@@ -215,4 +216,4 @@ https://github.com/olucurious/PyFCM
 
 Need help, have any questions, suggestions?
 ----------------
-Submit an issue/PR or email me at mojca.rojko@gmail.com
+Submit an issue/PR on this project. Please do not send me emails, as then the community has no chance to see your questions / provide answers.

@@ -1,13 +1,14 @@
 from __future__ import unicode_literals
 
+from copy import deepcopy
+
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
+from .fcm import response_dict
 from .settings import FCM_DJANGO_SETTINGS as SETTINGS
 import logging
 
-@python_2_unicode_compatible
 class Device(models.Model):
     name = models.CharField(
         max_length=255,
@@ -52,6 +53,7 @@ class FCMDeviceQuerySet(models.query.QuerySet):
             data=None,
             sound=None,
             badge=None,
+            extra_notification_kwargs=None,
             api_key=None,
             **kwargs):
         """
@@ -70,8 +72,9 @@ class FCMDeviceQuerySet(models.query.QuerySet):
                 'registration_id',
                 flat=True
             ))
+
             if len(registration_ids) == 0:
-                return [{'failure': len(self), 'success': 0}]
+                return dict(deepcopy(response_dict), failure=len(self), success=0)
 
             result = fcm_send_bulk_message(
                 registration_ids=registration_ids,
@@ -81,6 +84,7 @@ class FCMDeviceQuerySet(models.query.QuerySet):
                 data=data,
                 sound=sound,
                 badge=badge,
+                extra_notification_kwargs=extra_notification_kwargs,
                 api_key=api_key,
                 **kwargs
             )
@@ -121,8 +125,9 @@ class FCMDeviceQuerySet(models.query.QuerySet):
                 'registration_id',
                 flat=True
             ))
+
             if len(registration_ids) == 0:
-                return [{'failure': len(self), 'success': 0}]
+                return dict(deepcopy(response_dict), failure=len(self), success=0)
 
             result = fcm_send_bulk_data_messages(
                 api_key=api_key,
@@ -259,8 +264,8 @@ class AbstractFCMDevice(Device):
             error_list = ['MissingRegistration', 'MismatchSenderId', 'InvalidRegistration', 'NotRegistered']
             print("FCM ERROR: device_id=%s error=%s"%(device.id,result['results'][0]['error']))
             if result['results'][0]['error'] in error_list:
-              device.update(active=False)
-              self._delete_inactive_device_if_requested(device)
+                device.update(active=False)
+                self._delete_inactive_device_if_requested(device)
 
     @staticmethod
     def _delete_inactive_device_if_requested(device):
